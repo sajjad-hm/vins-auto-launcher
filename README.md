@@ -6,6 +6,7 @@ This ROS package automates the process of:
 1. Launching **VINS-Mono** (`vins_estimator/android.launch`)
 2. Starting an odometry recorder node or activity predictor node
 3. Playing a specified ROS bag file
+4. Automatically launch vins-mono and start prediction of the activity in real-time with pre built ML model.
 
 Odometry or activity prediction data is saved or published as appropriate.
 
@@ -37,8 +38,8 @@ source devel/setup.bash
 
 ## **Usage**
 
-### **Full Pipeline (Odometry Recording)**
-Run the full pipeline (VINS → Recorder → Bag playback):
+### **Odometry Recording Launch Command**
+Run the full process to record the raw_data feature (VINS-Mono → Bag playback → Feature Recorder):
 
 ```bash
 roslaunch vins_auto_launcher full_pipeline.launch bag_file:=/absolute/path/to/your_file.bag
@@ -49,8 +50,8 @@ Example:
 roslaunch vins_auto_launcher full_pipeline.launch bag_file:=/home/user/data/sample.bag
 ```
 
-### **Full Pipeline (Activity Prediction)**
-Run the full pipeline with activity prediction:
+### **Activity Prediction Launch Command**
+Run the full process with activity prediction (VINS-Mono → Bag playback → Activity Prediction):
 
 ```bash
 roslaunch vins_auto_launcher full_pipeline_predict.launch bag_file:=/absolute/path/to/your_file.bag
@@ -88,6 +89,11 @@ roslaunch vins_auto_launcher full_pipeline_predict.launch bag_file:=/home/user/d
 5. Plays the provided `.bag` file
 
 ---
+#### `Monitor Activity Prediction in Real-Time`
+
+```bash
+rostopic echo /activity_prediction
+```
 
 
 ### **CSV Format (Odometry Recorder)**
@@ -124,7 +130,7 @@ vins_auto_launcher/
 ## **Tips**
 - You must provide an **absolute path** for `bag_file` in the launch command.
 - The package will **not overwrite** CSV files from previous runs — each has a unique timestamp.
-- Ensure `vins_estimator` is built and can run `android.launch` independently before using this package.
+- Ensure `vins_estimator` is built and **link the location of vins_eastimator in the launch file** and can run `android.launch` independently before using this package.
 - For activity prediction, ensure the required model and scaler files are present in the `models/` directory.
 
 ---

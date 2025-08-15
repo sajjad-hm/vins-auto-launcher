@@ -5,11 +5,17 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
   std_msgs
   nav_msgs
+  rosbag
 )
 
 catkin_package()
 
+include_directories(
+  ${catkin_INCLUDE_DIRS}
+)
+
 catkin_install_python(PROGRAMS
   scripts/vins_odom_recorder.py
+  scripts/predictor_node.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )

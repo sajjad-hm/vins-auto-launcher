@@ -1,22 +1,26 @@
+
 # VINS Auto Launcher
 
 This ROS package automates the process of:
 
 1. Launching **VINS-Mono** (`vins_estimator/android.launch`)
-2. Starting an odometry recorder node
+2. Starting an odometry recorder node or activity predictor node
 3. Playing a specified ROS bag file
 
-The odometry data is saved into a CSV file whose name matches the bag file name, with a timestamp suffix to avoid overwriting.
+Odometry or activity prediction data is saved or published as appropriate.
 
 ---
+
 
 ## **Prerequisites**
 
 - ROS Melodic (tested on Ubuntu 18.04, Python 2.7)
 - [VINS-Mono](https://github.com/HKUST-Aerial-Robotics/VINS-Mono) installed in your `catkin_ws/src`
 - `rosbag` installed (comes with ROS by default)
+- `joblib`, `numpy` (for predictor node, install via `pip` if needed)
 
 ---
+
 
 ## **Installation**
 
@@ -30,9 +34,10 @@ source devel/setup.bash
 
 ---
 
+
 ## **Usage**
 
-### **Basic Command**
+### **Full Pipeline (Odometry Recording)**
 Run the full pipeline (VINS → Recorder → Bag playback):
 
 ```bash
@@ -44,9 +49,25 @@ Example:
 roslaunch vins_auto_launcher full_pipeline.launch bag_file:=/home/user/data/sample.bag
 ```
 
+### **Full Pipeline (Activity Prediction)**
+Run the full pipeline with activity prediction:
+
+```bash
+roslaunch vins_auto_launcher full_pipeline_predict.launch bag_file:=/absolute/path/to/your_file.bag
+```
+
+Example:
+```bash
+roslaunch vins_auto_launcher full_pipeline_predict.launch bag_file:=/home/user/data/sample.bag
+```
+
+---
+
+
 ---
 
 ### **What Happens**
+#### `full_pipeline.launch`
 1. Launches VINS-Mono (`vins_estimator/android.launch`)
 2. Waits **3 seconds**
 3. Starts `vins_odom_recorder.py`:
@@ -56,9 +77,20 @@ roslaunch vins_auto_launcher full_pipeline.launch bag_file:=/home/user/data/samp
 4. Waits **3 seconds**
 5. Plays the provided `.bag` file
 
+#### `full_pipeline_predict.launch`
+1. Launches VINS-Mono (`vins_estimator/android.launch`)
+2. Waits **3 seconds**
+3. Starts `predictor_node.py`:
+   - Loads ML model and scaler from `models/`
+   - Listens to `/vins_estimator/odometry`
+   - Publishes activity prediction to `/activity_prediction`
+4. Waits **6 seconds**
+5. Plays the provided `.bag` file
+
 ---
 
-### **CSV Format**
+
+### **CSV Format (Odometry Recorder)**
 The CSV file contains:
 
 | Position_x | Position_y | Position_z | Orientation_x | Orientation_y | Orientation_z | Orientation_w |
@@ -71,6 +103,7 @@ Example:
 
 ---
 
+
 ## **File Structure**
 
 ```
@@ -78,19 +111,24 @@ vins_auto_launcher/
 ├── CMakeLists.txt
 ├── package.xml
 ├── launch/
-│   └── full_pipeline.launch
+│   ├── full_pipeline.launch
+│   └── full_pipeline_predict.launch
 ├── scripts/
-│   └── vins_odom_recorder.py
+│   ├── vins_odom_recorder.py
+│   └── predictor_node.py
 ```
 
 ---
+
 
 ## **Tips**
 - You must provide an **absolute path** for `bag_file` in the launch command.
 - The package will **not overwrite** CSV files from previous runs — each has a unique timestamp.
 - Ensure `vins_estimator` is built and can run `android.launch` independently before using this package.
+- For activity prediction, ensure the required model and scaler files are present in the `models/` directory.
 
 ---
+
 
 ## **License**
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

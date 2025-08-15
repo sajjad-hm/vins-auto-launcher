@@ -31,7 +31,7 @@ if __name__ == "__main__":
     # Extract bag name and add timestamp
     bag_name = os.path.basename(bag_path).replace(".bag", "")
     timestamp = int(time.time())
-    csv_name = "{}_{}.csv".format(bag_name, timestamp)
+    csv_name = "{}_{}_{}.csv".format('vins_out_no_loop',bag_name, timestamp)
 
     # Save CSV in same directory as bag file
     csv_file = os.path.join(os.path.dirname(bag_path), csv_name)

@@ -1,0 +1,22 @@
+<launch>
+    <!-- Bag file path argument -->
+    <arg name="bag_file" default="/home/sajjad/Poco_F1_DS/Sajjad_test_data/combined/movie.bag"/>
+
+    <!-- Step 1: Launch VINS-Mono -->
+    <include file="/home/sajjad/catkin_ws/src/VINS-Mono/vins_estimator/launch/android.launch"/>
+
+    <!-- Step 2: Wait 3 seconds, then launch predictor_node.py -->
+    <node pkg="vins_auto_launcher"
+          type="predictor_node.py"
+          name="predictor_node"
+          output="screen"
+          launch-prefix="bash -c 'sleep 3; $0 $@'"/>
+
+    <!-- Step 3: Wait 6 seconds total, then play rosbag -->
+    <node pkg="rosbag"
+          type="play"
+          name="rosbag_play"
+          args="$(arg bag_file)"
+          launch-prefix="bash -c 'sleep 6; $0 $@'"
+          output="screen"/>
+</launch>

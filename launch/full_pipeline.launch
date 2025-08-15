@@ -1,0 +1,21 @@
+<launch>
+    <!-- Pass the bag file path -->
+    <arg name="bag_file" default="/home/sajjad/Poco_F1_DS/JKKNIU_POND/movie.bag" />
+
+    <!-- Step 1: Launch VINS-Mono -->
+    <include file="/home/sajjad/catkin_ws/src/VINS-Mono/vins_estimator/launch/android.launch" />
+
+    <!-- Step 2: Wait 3 seconds, then launch odometry recorder -->
+    <node pkg="vins_auto_launcher"
+          type="vins_odom_recorder.py"
+          name="vins_odom_recorder"
+          output="screen"
+          launch-prefix="bash -c 'sleep 3; $0 $@'">
+        <param name="bag_file" value="$(arg bag_file)" />
+    </node>
+
+    <!-- Step 3: Wait another 3 seconds, then play the bag -->
+    <node pkg="rosbag" type="play" name="rosbag_play"
+          args="$(arg bag_file)"
+          launch-prefix="bash -c 'sleep 6; $0 $@'" />
+</launch>

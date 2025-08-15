@@ -1,0 +1,13 @@
+<package format="2">
+  <name>vins_auto_launcher</name>
+  <version>0.0.0</version>
+  <description>Launches VINS, records odometry, and plays bag</description>
+  <maintainer email="sajjadhossen.eee@gmail.com">Sajjad</maintainer>
+  <license>BSD</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <depend>rospy</depend>
+  <depend>std_msgs</depend>
+  <depend>nav_msgs</depend>
+  <depend>rosbag</depend>
+</package>

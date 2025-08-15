@@ -22,7 +22,7 @@ The odometry data is saved into a CSV file whose name matches the bag file name,
 
 ```bash
 cd ~/catkin_ws/src
-git clone https://github.com/sajjad-hm/vins_auto_launcher.git
+git clone https://github.com/sajjad-hm/vins-auto-launcher.git
 cd ..
 catkin_make
 source devel/setup.bash
